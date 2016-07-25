@@ -1,22 +1,12 @@
 (* NIZK Proof System - verification script by Remi Bazin *)
 
-Load utils.
+Load Fp.
 
-
-
-
-(* Primery group order *)
-Variable p : nat.
-
-Hypothesis p_big : 2 <= p.
 
 
 
 
 (* Bilinear groups and a few constants *)
-Inductive Fp : Set :=
-  | ConstrFp : forall x:nat, (x<p -> Fp).
-
 Inductive G1 : Set :=
   | ConstrG1 : Fp -> G1.
 Inductive G2 : Set :=
@@ -31,10 +21,6 @@ Inductive B2 : Set :=
 Inductive BT : Set :=
   | ConstrBT : GT -> GT -> GT -> GT -> BT.
 
-Definition Fp_0 : Fp :=
-  ConstrFp 0 (le_trans 1 2 p (le_S 1 1 (le_n 1)) p_big).
-Definition Fp_1 : Fp := ConstrFp 1 p_big.
-
 Definition G1_O : G1 := ConstrG1 Fp_0.
 Definition G2_O : G2 := ConstrG2 Fp_0.
 Definition GT_1 : GT := ConstrGT Fp_0.
@@ -46,17 +32,7 @@ Definition BT_1 : BT := ConstrBT GT_1 GT_1 GT_1 GT_1.
 
 
 (* Group operations *)
-(* TODO
-Definition addFp (a b:Fp) : Fp :=
-  match a with | ConstrFp v_a p_a =>
-    match b with | ConstrFp v_b p_b =>
 
-    end
-  end
-.
-*)
-
-Variable addFp : Fp -> Fp -> Fp.
 Variable addG1 : G1 -> G1 -> G1.
 Variable addG2 : G2 -> G2 -> G2.
 Variable multGT : GT -> GT -> GT.
@@ -88,32 +64,9 @@ Definition multBT (a b:BT) : BT :=
 
 
 
-(* Identity element *)
-Definition Is_zero (G:Type) (add:G->G->G) (e:G) : Prop :=
-  forall a:G, ((add e a) = a)
-.
-
-(* Definition of an abelian group that is isomorphic to Fp *)
-Definition Is_Fp_isomorphic (G:Type) (add:G->G->G) : Prop :=
-  (* Note: Closure comes from the type of add. *)
-  (* Associativity *)
-  (forall (a:G) (b:G) (c:G), ((add a (add b c)) = (add (add a b) c)))
-  /\
-  (* Commutativity *)
-  (forall (a:G) (b:G), ((add a b) = (add b a)))
-  /\
-  (* Identity element *)
-  (exists e:G, (Is_zero G add e))
-  /\
-  (* Inverse element *)
-  (forall a:G, exists b:G, exists e:G, ((Is_zero G add e) /\ ((add a b) = e)))
-  /\
-  (* Order at most p *)
-  (*forall a:G, exists *)True
-.
 
 (* Only abelian groups are used *)
-Hypothesis Fp_abelian : (Is_Fp_isomorphic Fp addFp).
-Hypothesis G1_abelian : (Is_Fp_isomorphic G1 addG1).
-Hypothesis G2_abelian : (Is_Fp_isomorphic G2 addG2).
-Hypothesis GT_abelian : (Is_Fp_isomorphic GT multGT).
+Hypothesis Fp_abelian : (Is_Fp_isomorphic Fp addFp p).
+Hypothesis G1_abelian : (Is_Fp_isomorphic G1 addG1 p).
+Hypothesis G2_abelian : (Is_Fp_isomorphic G2 addG2 p).
+Hypothesis GT_abelian : (Is_Fp_isomorphic GT multGT p).
