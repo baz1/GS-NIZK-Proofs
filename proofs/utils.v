@@ -1,16 +1,36 @@
 (* NIZK Proof System - Useful functions by Remi Bazin *)
 
+
+
+
 (* Imports *)
 Require Import Arith.
 Require Import Le.
 Require Import List.
 
+
+
+
+(* Various utils *)
 Fixpoint repeat_fn (n:nat) (A:Type) (f:A -> A) (s:A) : A :=
   match n with
     | O => s
     | S m => repeat_fn m A f (f s)
   end
 .
+
+
+
+
+(* Prime integer definition and properties *)
+Definition Is_prime (n:nat) : Prop :=
+  (2 <= n)
+  /\
+  (forall k:nat, (0<k<n) -> (NPeano.gcd k n = 1))
+.
+
+
+
 
 (* Mathematical structure properties *)
 Definition Is_zero (G:Type) (add:G->G->G) (e:G) : Prop :=
@@ -62,6 +82,9 @@ Definition Is_Fp_isomorphic (G:Type) (add:G->G->G) (p:nat) : Prop :=
     /\
     (* Inverse element *)
     (Has_inverse G add e)
+    /\
+    (* Prime order *)
+    (Is_prime p)
     /\
     (* Order at most p *)
     (Order_atmost_p G add e p)

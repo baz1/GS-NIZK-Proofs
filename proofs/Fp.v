@@ -8,7 +8,15 @@ Load utils.
 (* Primery group order *)
 Variable p : nat.
 
-Hypothesis p_big : 2 <= p.
+Hypothesis p_prime : Is_prime p.
+
+Lemma p_big : 2 <= p.
+Proof.
+  pose (p_prime := p_prime).
+  unfold Is_prime in p_prime.
+  inversion p_prime.
+  exact H.
+Qed.
 
 Lemma p_is_not_null : p <> 0.
 Proof.
