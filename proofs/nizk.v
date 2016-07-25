@@ -32,7 +32,7 @@ Inductive BT : Set :=
   | ConstrBT : GT -> GT -> GT -> GT -> BT.
 
 Definition Fp_0 : Fp :=
-  ConstrFp 0 (le_transitive 1 2 p (conj (le_S 1 1 (le_n 1)) p_big)).
+  ConstrFp 0 (le_trans 1 2 p (le_S 1 1 (le_n 1)) p_big).
 Definition Fp_1 : Fp := ConstrFp 1 p_big.
 
 Definition G1_O : G1 := ConstrG1 Fp_0.
