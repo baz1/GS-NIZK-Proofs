@@ -5,6 +5,7 @@
 
 (* Imports *)
 Require Import Arith.
+Require Import NPeano.
 Require Import Le.
 Require Import List.
 
