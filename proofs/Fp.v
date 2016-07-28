@@ -103,3 +103,19 @@ Proof.
   reflexivity.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
+
+Theorem Fp_has_inverse : Has_inverse Fp addFp Fp_0.
+Proof.
+  unfold Has_inverse.
+  refine (conj Fp_0_well_formed _).
+  intros.
+  case a.
+  intros.
+  refine (ex_intro _ (ConstrFp ((p-x) mod p) (Nat.mod_upper_bound _ p p_is_not_null)) _).
+  unfold Fp_0, addFp.
+  assert (subg : (x + (p - x) mod p) mod p = 0).
+  rewrite (Nat.add_mod_idemp_r x (p-x) p p_is_not_null).
+  rewrite <- (le_plus_minus x p (le_S_n x p (le_S (S x) p l))).
+  exact (Nat.mod_same p p_is_not_null).
+  exact (Fp_equality _ _ _ _ subg).
+Qed.
