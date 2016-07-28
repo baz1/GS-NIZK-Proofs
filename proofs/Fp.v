@@ -77,3 +77,17 @@ Proof.
     exact (Nat.mod_small x p l).
   exact (Fp_equality (x mod p) x (Nat.mod_upper_bound x p p_is_not_null) l part1).
 Qed.
+
+Theorem Fp_associative : Is_associative Fp addFp.
+Proof.
+  unfold Is_associative.
+  intros a b c.
+  case a, b, c.
+  unfold addFp.
+  assert (subg : (x + (x0 + x1) mod p) mod p = ((x + x0) mod p + x1) mod p).
+  rewrite (Nat.add_mod_idemp_r x (x0 + x1) p p_is_not_null).
+  rewrite (Nat.add_mod_idemp_l (x + x0) x1 p p_is_not_null).
+  rewrite (plus_assoc x x0 x1).
+  reflexivity.
+  exact (Fp_equality _ _ _ _ subg).
+Qed.
