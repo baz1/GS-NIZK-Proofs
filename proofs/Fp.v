@@ -122,3 +122,64 @@ Proof.
   exact (Nat.mod_same p p_is_not_null).
   exact (Fp_equality _ _ _ _ subg).
 Qed.
+
+Theorem Fp_order_atmost_p : Order_atmost_p Fp addFp Fp_0 p.
+Proof.
+  unfold Order_atmost_p.
+  refine (conj Fp_0_well_formed _).
+  intros.
+  case a.
+  intros.
+  assert (generalization : forall (k m:nat),
+    repeat_fn k Fp (fun x0 : Fp => addFp x0 (ConstrFp x l)) (Fp_from_nat m)
+    = Fp_from_nat (k * x + m)).
+  (* Generalization proof *)
+  intro.
+  elim k.
+    (* Case k=0 *)
+    rewrite (mult_0_l x).
+    intro.
+    rewrite (plus_O_n m).
+    unfold repeat_fn, Fp_0, Fp_from_nat.
+    reflexivity.
+    (* Case k --> k+1 *)
+    intros.
+    assert (subg : repeat_fn n Fp (fun x0 : Fp => addFp x0 (ConstrFp x l))
+      (addFp (Fp_from_nat m) (ConstrFp x l))
+      = Fp_from_nat (S n * x + m)).
+    assert (left : addFp (Fp_from_nat m) (ConstrFp x l) = Fp_from_nat (x+m)).
+    unfold Fp_from_nat, addFp.
+    assert (tmp : (m mod p + x) mod p = (x + m) mod p).
+    rewrite (Nat.add_mod_idemp_l m x p p_is_not_null).
+    rewrite (plus_comm x m).
+    reflexivity.
+    exact (Fp_equality _ _ _ _ tmp).
+    assert (right : S n * x + m = n * x + (x+m)).
+    rewrite (mult_succ_l n x).
+    rewrite (plus_assoc (n*x) x m).
+    reflexivity.
+    rewrite left.
+    rewrite right.
+    exact (H (x+m)).
+    unfold repeat_fn.
+    exact subg.
+  (* Back to specialized case *)
+  pose (result := generalization p O).
+  rewrite <- (plus_n_O (p*x)) in result.
+  assert (subg1 : Fp_from_nat (x * p) = Fp_0).
+  unfold Fp_from_nat, Fp_0.
+  assert (subg2 : (x*p) mod p=0).
+  rewrite (Nat.mod_mul x p p_is_not_null).
+  reflexivity.
+  exact (Fp_equality _ _ _ _ subg2).
+  assert (subg3 : Fp_from_nat O = Fp_0).
+  unfold Fp_from_nat, Fp_0.
+  assert (subg4 : 0 mod p = 0).
+  rewrite (Nat.mod_0_l p p_is_not_null).
+  reflexivity.
+  exact (Fp_equality _ _ _ _ subg4).
+  rewrite (mult_comm p x) in result.
+  rewrite subg1 in result.
+  rewrite subg3 in result.
+  exact result.
+Qed.
