@@ -70,7 +70,7 @@ Qed.
 Theorem Fp_0_well_formed : Is_zero Fp addFp Fp_0.
 Proof.
   unfold Is_zero, Fp_0, addFp.
-  intro a.
+  intros.
   destruct a.
   rewrite (plus_O_n x).
   assert (part1 : (x mod p) = x).
@@ -81,13 +81,25 @@ Qed.
 Theorem Fp_associative : Is_associative Fp addFp.
 Proof.
   unfold Is_associative.
-  intros a b c.
+  intros.
   case a, b, c.
   unfold addFp.
   assert (subg : (x + (x0 + x1) mod p) mod p = ((x + x0) mod p + x1) mod p).
   rewrite (Nat.add_mod_idemp_r x (x0 + x1) p p_is_not_null).
   rewrite (Nat.add_mod_idemp_l (x + x0) x1 p p_is_not_null).
   rewrite (plus_assoc x x0 x1).
+  reflexivity.
+  exact (Fp_equality _ _ _ _ subg).
+Qed.
+
+Theorem Fp_commutative : Is_commutative Fp addFp.
+Proof.
+  unfold Is_commutative.
+  intros.
+  case a, b.
+  unfold addFp.
+  assert (subg : (x + x0) mod p = (x0 + x) mod p).
+  rewrite (plus_comm x x0).
   reflexivity.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
