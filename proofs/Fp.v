@@ -37,6 +37,9 @@ Definition Fp_0 : Fp :=
   ConstrFp 0 (le_trans 1 2 p (le_S 1 1 (le_n 1)) p_big).
 Definition Fp_1 : Fp := ConstrFp 1 p_big.
 
+Definition Fp_from_nat (n:nat) : Fp :=
+  ConstrFp (n mod p) (Nat.mod_upper_bound n p p_is_not_null).
+
 Definition addFp (a b:Fp) : Fp :=
   match a with | ConstrFp v_a p_a =>
     match b with | ConstrFp v_b p_b =>
