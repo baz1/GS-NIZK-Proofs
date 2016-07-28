@@ -74,30 +74,6 @@ Proof.
   destruct a.
   rewrite (plus_O_n x).
   assert (part1 : (x mod p) = x).
-    pose (p_pos := le_trans 1 2 p (le_S 1 1 (le_n 1)) p_big). (* TODO remove if not used *)
-    pose (useful := mod_bound_pos x p (le_0_n x)
-      (le_trans 1 2 p (le_S 1 1 (le_n 1)) p_big)).
-    inversion useful.
-    pose (eq := div_mod x p p_is_not_null).
-    case_eq (x/p).
-      (* Case x/p = 0 *)
-      intro H1.
-      rewrite H1 in eq.
-      rewrite <- (mult_n_O p) in eq.
-      unfold plus in eq.
-      rewrite <- eq.
-      reflexivity.
-      (* Case x/p > 0 *)
-      intros n H1.
-      rewrite H1 in eq.
-      rewrite <- (mult_n_Sm p n) in eq.
-      assert (wrong1 : p * n + p + x mod p <= x).
-      rewrite <- eq.
-      exact (le_n x).
-      rewrite <- (plus_assoc (p * n) p (x mod p)) in wrong1.
-      rewrite (plus_permute (p * n) p (x mod p)) in wrong1.
-      pose (wrong2 := le_trans p (p + (p * n + x mod p)) x
-        (le_plus_l p (p*n + x mod p)) wrong1).
-      case (lt_not_le x p l wrong2).
+    exact (Nat.mod_small x p l).
   exact (Fp_equality (x mod p) x (Nat.mod_upper_bound x p p_is_not_null) l part1).
 Qed.
