@@ -33,6 +33,8 @@ Qed.
 (* Definition of Fp and its main elements *)
 Inductive Fp : Set := | ConstrFp : forall x:nat, (x<p -> Fp).
 
+Delimit Scope Fp_scope with Fp.
+
 Definition Fp_0 : Fp :=
   ConstrFp 0 (le_trans 1 2 p (le_S 1 1 (le_n 1)) p_big).
 Definition Fp_1 : Fp := ConstrFp 1 p_big.
@@ -47,6 +49,7 @@ Definition addFp (a b:Fp) : Fp :=
     end
   end
 .
+Infix "+" := addFp : Fp_scope.
 
 Definition succFp (a:Fp) : Fp := addFp a Fp_1.
 
@@ -57,6 +60,7 @@ Definition multFp (a b:Fp) : Fp :=
     end
   end
 .
+Infix "*" := multFp : Fp_scope.
 
 
 
@@ -154,7 +158,7 @@ Proof.
     rewrite (plus_comm x m).
     reflexivity.
     exact (Fp_equality _ _ _ _ tmp).
-    assert (right : S n * x + m = n * x + (x+m)).
+    assert (right : (S n) * x + m = n * x + (x+m)).
     rewrite (mult_succ_l n x).
     rewrite (plus_assoc (n*x) x m).
     reflexivity.
@@ -207,4 +211,22 @@ Proof.
   exact Fp_order_atmost_p.
   exact Fp_order_atleast_p.
   exact Fp_card.
+Qed.
+
+
+
+
+(* Utility properties inspired from the nat library *)
+Open Scope Fp_scope.
+
+Theorem Fp_plus_n_O : forall n:Fp, n = n+Fp_0.
+Proof.
+  intro.
+  case n.
+  intros.
+  unfold Fp_0, addFp.
+  assert (subg : x = (x+0) mod p).
+  rewrite <- (plus_n_O x).
+  exact (eq_sym (Nat.mod_small x p l)).
+  exact (Fp_equality _ _ _ _ subg).
 Qed.

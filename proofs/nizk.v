@@ -1,19 +1,12 @@
 (* NIZK Proof System - verification script by Remi Bazin *)
 
-Load Fp.
+Load pairings.
 
 
 
 
 
 (* Bilinear groups and a few constants *)
-Inductive G1 : Set :=
-  | ConstrG1 : Fp -> G1.
-Inductive G2 : Set :=
-  | ConstrG2 : Fp -> G2.
-Inductive GT : Set :=
-  | ConstrGT : Fp -> GT.
-
 Inductive B1 : Set :=
   | ConstrB1 : G1 -> G1 -> B1.
 Inductive B2 : Set :=
@@ -21,9 +14,6 @@ Inductive B2 : Set :=
 Inductive BT : Set :=
   | ConstrBT : GT -> GT -> GT -> GT -> BT.
 
-Definition G1_O : G1 := ConstrG1 Fp_0.
-Definition G2_O : G2 := ConstrG2 Fp_0.
-Definition GT_1 : GT := ConstrGT Fp_0.
 Definition B1_O : B1 := ConstrB1 G1_O G1_O.
 Definition B2_O : B2 := ConstrB2 G2_O G2_O.
 Definition BT_1 : BT := ConstrBT GT_1 GT_1 GT_1 GT_1.
@@ -32,10 +22,6 @@ Definition BT_1 : BT := ConstrBT GT_1 GT_1 GT_1 GT_1.
 
 
 (* Group operations *)
-
-Variable addG1 : G1 -> G1 -> G1.
-Variable addG2 : G2 -> G2 -> G2.
-Variable multGT : GT -> GT -> GT.
 
 Definition addB1 (a b:B1) : B1 :=
   match a with | ConstrB1 a1 a2 =>
@@ -65,8 +51,18 @@ Definition multBT (a b:BT) : BT :=
 
 
 
-(* Only abelian groups are used *)
-Hypothesis Fp_abelian : (Is_Fp_isomorphic Fp addFp p).
-Hypothesis G1_abelian : (Is_Fp_isomorphic G1 addG1 p).
-Hypothesis G2_abelian : (Is_Fp_isomorphic G2 addG2 p).
-Hypothesis GT_abelian : (Is_Fp_isomorphic GT multGT p).
+(* Mathematical structure properties *)
+Theorem B1_abelian : (Is_Fp_isomorphic B1 addB1 p).
+Proof.
+  admit. (* TODO *)
+Qed.
+
+Theorem B2_abelian : (Is_Fp_isomorphic B2 addB2 p).
+Proof.
+  admit. (* TODO *)
+Qed.
+
+Theorem BT_abelian : (Is_Fp_isomorphic BT multBT p).
+Proof.
+  admit. (* TODO *)
+Qed.
