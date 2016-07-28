@@ -183,3 +183,28 @@ Proof.
   rewrite subg3 in result.
   exact result.
 Qed.
+
+Theorem Fp_order_atleast_p : Order_atleast_p Fp addFp Fp_0 p.
+Proof.
+  admit. (* TODO *)
+Qed.
+
+Theorem Fp_card : Has_card Fp p.
+Proof.
+  admit. (* TODO *)
+Qed.
+
+Theorem Fp_well_formed : Is_Fp_isomorphic Fp addFp p.
+Proof.
+  unfold Is_Fp_isomorphic.
+  refine (ex_intro _ Fp_0 _).
+  refine (conj _ (conj _ (conj _ (conj _ (conj _ (conj _ (conj _ _))))))).
+  exact Fp_associative.
+  exact Fp_commutative.
+  exact Fp_0_well_formed.
+  exact Fp_has_inverse.
+  exact p_prime.
+  exact Fp_order_atmost_p.
+  exact Fp_order_atleast_p.
+  exact Fp_card.
+Qed.

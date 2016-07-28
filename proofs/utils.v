@@ -90,6 +90,9 @@ Definition Is_Fp_isomorphic (G:Type) (add:G->G->G) (p:nat) : Prop :=
     (* Order at most p *)
     (Order_atmost_p G add e p)
     /\
+    (* Order at least p *)
+    (Order_atleast_p G add e p)
+    /\
     (* Cardinal check *)
     (Has_card G p)
   )
