@@ -231,7 +231,7 @@ Proof.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
-Lemma Gp_plus_O_n : forall n:Fp, Fp_0+n = n.
+Lemma Fp_plus_O_n : forall n:Fp, Fp_0+n = n.
 Proof.
   intro.
   case n.
@@ -240,6 +240,17 @@ Proof.
   assert (subg : (0+x) mod p = x).
   rewrite (plus_O_n x).
   exact (Nat.mod_small x p l).
+  exact (Fp_equality _ _ _ _ subg).
+Qed.
+
+Lemma Fp_plus_comm : forall (n m:Fp), n+m = m+n.
+Proof.
+  intros.
+  case n, m.
+  unfold addFp.
+  assert (subg : (x+x0) mod p = (x0+x) mod p).
+  rewrite (plus_comm x x0).
+  reflexivity.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
