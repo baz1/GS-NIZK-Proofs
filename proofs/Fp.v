@@ -219,7 +219,7 @@ Qed.
 (* Utility properties inspired from the nat library *)
 Open Scope Fp_scope.
 
-Theorem Fp_plus_n_O : forall n:Fp, n = n+Fp_0.
+Lemma Fp_plus_n_O : forall n:Fp, n = n+Fp_0.
 Proof.
   intro.
   case n.

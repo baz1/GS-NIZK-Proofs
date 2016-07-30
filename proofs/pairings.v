@@ -13,6 +13,10 @@ Inductive G2 : Set :=
 Inductive GT : Set :=
   | ConstrGT : Fp -> GT.
 
+Delimit Scope G1_scope with G1.
+Delimit Scope G2_scope with G2.
+Delimit Scope GT_scope with GT.
+
 Definition G1_O : G1 := ConstrG1 Fp_0.
 Definition G2_O : G2 := ConstrG2 Fp_0.
 Definition GT_1 : GT := ConstrGT Fp_0.
@@ -29,12 +33,14 @@ Definition addG1 (a b:G1) : G1 :=
     end
   end
 .
+Infix "+" := addG1 : G1_scope.
 
 Definition multG1 (a:Fp) (b:G1) : G1 :=
   match b with | ConstrG1 vb =>
     ConstrG1 (multFp a vb)
   end
 .
+Infix "*" := multG1 : G1_scope.
 
 Definition addG2 (a b:G2) : G2 :=
   match a with | ConstrG2 va =>
@@ -43,12 +49,14 @@ Definition addG2 (a b:G2) : G2 :=
     end
   end
 .
+Infix "+" := addG2 : G2_scope.
 
 Definition multG2 (a:Fp) (b:G2) : G2 :=
   match b with | ConstrG2 vb =>
     ConstrG2 (multFp a vb)
   end
 .
+Infix "*" := multG2 : G2_scope.
 
 Definition multGT (a b:GT) : GT :=
   match a with | ConstrGT va =>
@@ -57,12 +65,14 @@ Definition multGT (a b:GT) : GT :=
     end
   end
 .
+Infix "*" := multGT : GT_scope.
 
 Definition powGT (a:GT) (b:Fp) : GT :=
   match a with | ConstrGT va =>
     ConstrGT (multFp va b)
   end
 .
+Infix "^" := powGT : GT_scope.
 
 Definition pairing (a:G1) (b:G2) : GT :=
   match a with | ConstrG1 va =>
@@ -93,7 +103,7 @@ Proof.
 Qed.
 
 Theorem pairing_bilinear_l : forall (a:G1) (b:G2) (i:Fp),
-  pairing (multG1 i a) b = powGT (pairing a b) i.
+  pairing (i * a)%G1 b = ((pairing a b) ^ i)%GT.
 Proof.
   intros.
   case a, b.
@@ -102,13 +112,13 @@ Proof.
 Qed.
 
 Theorem pairing_bilinear_r : forall (a:G1) (b:G2) (j:Fp),
-  pairing a (multG2 j b) = powGT (pairing a b) j.
+  pairing a (j * b)%G2 = ((pairing a b) ^ j)%GT.
 Proof.
   admit. (* TODO *)
 Qed.
 
 Theorem pairing_bilinear : forall (a:G1) (b:G2) (i j:Fp),
-  pairing (multG1 i a) (multG2 j b) = powGT (pairing a b) (multFp i j).
+  pairing (i * a)%G1 (j * b)%G2 = ((pairing a b) ^ (i * j)%Fp)%GT.
 Proof.
   admit. (* TODO *)
 Qed.
