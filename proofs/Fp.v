@@ -254,4 +254,17 @@ Proof.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
+Lemma Fp_plus_assoc : forall (n m p:Fp), n+(m+p) = n+m+p.
+Proof.
+  intros.
+  case n, m, p0.
+  unfold addFp.
+  assert (subg : (x + (x0 + x1) mod p) mod p = ((x + x0) mod p + x1) mod p).
+  rewrite (Nat.add_mod_idemp_r x (x0+x1) p p_is_not_null).
+  rewrite (Nat.add_mod_idemp_l (x+x0) x1 p p_is_not_null).
+  rewrite (plus_assoc x x0 x1).
+  reflexivity.
+  exact (Fp_equality _ _ _ _ subg).
+Qed.
+
 Close Scope Fp_scope.
