@@ -230,3 +230,17 @@ Proof.
   exact (eq_sym (Nat.mod_small x p l)).
   exact (Fp_equality _ _ _ _ subg).
 Qed.
+
+Lemma Gp_plus_O_n : forall n:Fp, Fp_0+n = n.
+Proof.
+  intro.
+  case n.
+  intros.
+  unfold Fp_0, addFp.
+  assert (subg : (0+x) mod p = x).
+  rewrite (plus_O_n x).
+  exact (Nat.mod_small x p l).
+  exact (Fp_equality _ _ _ _ subg).
+Qed.
+
+Close Scope Fp_scope.
