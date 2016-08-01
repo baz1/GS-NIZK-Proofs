@@ -30,6 +30,32 @@ Definition Is_prime (n:nat) : Prop :=
   (forall k:nat, (0<k<n) -> (NPeano.gcd k n = 1))
 .
 
+(* See https://www.eecs.northwestern.edu/~robby/courses/395-495-2013-fall/genrec_hw.v
+   to prove the end of the recursion.
+Print well_founded.
+Print Acc.
+Fixpoint mygcd (n m:nat) :=
+  match le_lt_dec n m with
+    | left _ => match n with
+      | O => m
+      | S O => 1
+      | _ => mygcd n (m mod n)
+    end
+    | right _ => match m with
+      | O => n
+      | S O => 1
+      | _ => mygcd (n mod m) m
+    end
+  end
+.
+*)
+
+Lemma gcd_mult : forall (m n p:nat), m>0 -> n>0 -> p>0 ->
+  gcd (m*n) p <= (gcd m p) * (gcd n p).
+Proof.
+  admit.
+Qed.
+
 
 
 

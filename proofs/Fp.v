@@ -127,18 +127,11 @@ Proof.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
-Theorem Fp_order_atmost_p : Order_atmost_p Fp addFp Fp_0 p.
-Proof.
-  unfold Order_atmost_p.
-  refine (conj Fp_0_well_formed _).
-  intros.
-  case a.
-  intros.
-  assert (generalization : forall (k m:nat),
+Lemma repeated_addition_Fp : forall (x:nat) (l:x<p) (k m:nat),
     repeat_fn k Fp (fun x0 : Fp => addFp x0 (ConstrFp x l)) (Fp_from_nat m)
-    = Fp_from_nat (k * x + m)).
-  (* Generalization proof *)
-  intro.
+    = Fp_from_nat (k * x + m).
+Proof.
+  intros x l k.
   elim k.
     (* Case k=0 *)
     rewrite (mult_0_l x).
@@ -167,8 +160,16 @@ Proof.
     exact (H (x+m)).
     unfold repeat_fn.
     exact subg.
-  (* Back to specialized case *)
-  pose (result := generalization p O).
+Qed.
+
+Theorem Fp_order_atmost_p : Order_atmost_p Fp addFp Fp_0 p.
+Proof.
+  unfold Order_atmost_p.
+  refine (conj Fp_0_well_formed _).
+  intros.
+  case a.
+  intros.
+  pose (result := repeated_addition_Fp x l p O).
   rewrite <- (plus_n_O (p*x)) in result.
   assert (subg1 : Fp_from_nat (x * p) = Fp_0).
   unfold Fp_from_nat, Fp_0.
@@ -190,7 +191,38 @@ Qed.
 
 Theorem Fp_order_atleast_p : Order_atleast_p Fp addFp Fp_0 p.
 Proof.
-  admit. (* TODO *)
+  unfold Order_atleast_p.
+  refine (conj Fp_0_well_formed _).
+  intros.
+  destruct a.
+  assert (fp0 : Fp_0 = Fp_from_nat O).
+  unfold Fp_0, Fp_from_nat.
+  exact (Fp_equality _ _ _ _ (eq_sym (Nat.mod_0_l p p_is_not_null))).
+  rewrite fp0.
+  intros.
+  rewrite (repeated_addition_Fp x l k O).
+  unfold Fp_from_nat.
+  intro wrong.
+  inversion wrong.
+  rewrite (Nat.mod_0_l p p_is_not_null) in H2.
+  rewrite <- (plus_n_O (k*x)) in H2.
+  pose (equiv := Nat.mod_divides (k*x) p p_is_not_null).
+  inversion equiv.
+  pose (H4 := H1 H2).
+  inversion H4.
+  pose (Hk := (proj2 p_prime) k H).
+  assert (subg : O <> x).
+  intro Hfalse.
+  unfold Fp_0 in H0.
+  case (H0 (Fp_equality _ _ _ _ (eq_sym Hfalse))).
+  pose (Hx := (proj2 p_prime) x (conj (neq_0_lt x subg) l)).
+  pose (gcdeq := gcd_mult k x p (proj1 H) (neq_0_lt x subg) (neq_0_lt p (not_eq_sym p_is_not_null))).
+  rewrite H5, Hk, Hx in gcdeq.
+  simpl in gcdeq.
+  rewrite (Nat.gcd_comm (p*x0) p) in gcdeq.
+  rewrite (Nat.gcd_mul_diag_l p x0 (le_0_n p)) in gcdeq.
+  pose (wrong2 := le_trans 2 p 1 (proj1 p_prime) gcdeq).
+  case (le_Sn_n 1 wrong2).
 Qed.
 
 Theorem Fp_card : Has_card Fp p.
@@ -265,6 +297,16 @@ Proof.
   rewrite (plus_assoc x x0 x1).
   reflexivity.
   exact (Fp_equality _ _ _ _ subg).
+Qed.
+
+Lemma Fp_plus_permute : forall (n m p:Fp), n + (m + p) = m + (n + p).
+Proof.
+  admit.
+Qed.
+
+Lemma Fp_plus_assoc_reverse : forall (n m p:Fp), n + m + p = n + (m + p).
+Proof.
+  admit.
 Qed.
 
 Close Scope Fp_scope.
