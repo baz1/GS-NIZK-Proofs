@@ -250,8 +250,28 @@ Proof.
     unfold Fp_lst_increasing, length.
     exact subg.
     (* No duplicates *)
-    admit.
-  admit. (* TODO *)
+    elim p.
+    unfold Fp_lst_increasing.
+    constructor.
+    intros.
+    assert (subg : NoDup (cons (Fp_from_nat n) (Fp_lst_increasing n))).
+    assert (subg2 : ~ In (Fp_from_nat n) (Fp_lst_increasing n)).
+    elim n.
+    unfold Fp_lst_increasing.
+    simpl.
+    intro.
+    case H0.
+    intros.
+    assert (subg : ~ In (Fp_from_nat (S n0)) (cons (Fp_from_nat n0) (Fp_lst_increasing n0))).
+    intro.
+    destruct H1.
+    admit. (* TODO from H1 *)
+    admit. (* TODO from H1 *)
+    unfold Fp_lst_increasing.
+    exact subg.
+    exact (NoDup_cons (A:=Fp) (Fp_from_nat n) (l:=Fp_lst_increasing n) subg2 H).
+    unfold Fp_lst_increasing.
+    exact subg.
   (* Part 2: Cardinal at most p *)
   admit. (* TODO *)
 Qed.
