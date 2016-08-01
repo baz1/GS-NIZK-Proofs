@@ -225,8 +225,34 @@ Proof.
   case (le_Sn_n 1 wrong2).
 Qed.
 
+Fixpoint Fp_lst_increasing (n:nat) : list Fp :=
+  match n with
+    | O => nil
+    | S m => cons (Fp_from_nat m) (Fp_lst_increasing m)
+  end
+.
+
 Theorem Fp_card : Has_card Fp p.
 Proof.
+  unfold Has_card.
+  refine (conj _ _).
+  (* Part 1: Cardinal at least p *)
+  refine (ex_intro _ (Fp_lst_increasing p) _).
+  refine (conj _ _).
+    (* Correct list length *)
+    elim p.
+    unfold Fp_lst_increasing, length.
+    reflexivity.
+    intros.
+    assert (subg : S (length (Fp_lst_increasing n)) = S n).
+    rewrite H.
+    reflexivity.
+    unfold Fp_lst_increasing, length.
+    exact subg.
+    (* No duplicates *)
+    admit.
+  admit. (* TODO *)
+  (* Part 2: Cardinal at most p *)
   admit. (* TODO *)
 Qed.
 
