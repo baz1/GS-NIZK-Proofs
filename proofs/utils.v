@@ -57,7 +57,7 @@ Definition Order_atmost_p (G:Type) (add:G->G->G) (e:G) (p:nat) : Prop :=
 Definition Order_atleast_p (G:Type) (add:G->G->G) (e:G) (p:nat) : Prop :=
   (Is_zero G add e)
   /\
-  (forall (a:G) (k:nat), 0<k<p -> (repeat_fn k G (fun x => add x a) e) <> e)
+  (forall (a:G) (k:nat), 0<k<p -> a<>e -> (repeat_fn k G (fun x => add x a) e) <> e)
 .
 
 Definition Has_card (G:Type) (p:nat) : Prop :=
