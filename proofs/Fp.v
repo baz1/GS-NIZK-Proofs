@@ -301,7 +301,8 @@ Proof.
     unfold Fp_lst_increasing.
     exact (in_nil (a:=Fp_from_nat (S n0))).
     intros.
-    assert (subg3 : ~ ((Fp_from_nat n1=Fp_from_nat (S n0)) \/ (In (Fp_from_nat (S n0)) (Fp_lst_increasing n1)))).
+    assert (subg3 : ~ ((Fp_from_nat n1=Fp_from_nat (S n0)) \/
+      (In (Fp_from_nat (S n0)) (Fp_lst_increasing n1)))).
     intro wrong1.
     destruct wrong1.
     pose (H5 := Fp_equality2 n1 (S n0) H4).
@@ -323,6 +324,8 @@ Proof.
     exact subg.
     exact (mainsubg p (le_n p)).
   (* Part 2: Cardinal at most p *)
+  intro.
+  destruct H.
   admit. (* TODO *)
 Qed.
 
@@ -397,7 +400,14 @@ Qed.
 
 Lemma Fp_plus_permute : forall (n m p:Fp), n + (m + p) = m + (n + p).
 Proof.
-  admit.
+  intros.
+  case n, m, p0.
+  unfold addFp.
+  refine (Fp_equality _ _ _ _ _).
+  rewrite (Nat.add_mod_idemp_r x (x0+x1) p p_is_not_null).
+  rewrite (Nat.add_mod_idemp_r x0 (x+x1) p p_is_not_null).
+  rewrite (plus_permute x x0 x1).
+  reflexivity.
 Qed.
 
 Lemma Fp_plus_assoc_reverse : forall (n m p:Fp), n + m + p = n + (m + p).
