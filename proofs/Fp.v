@@ -350,7 +350,7 @@ Qed.
 (* Utility properties inspired from the nat library *)
 Open Scope Fp_scope.
 
-Lemma Fp_plus_n_O : forall n:Fp, n = n+Fp_0.
+Lemma Fp_plus_n_O : forall n, n = n+Fp_0.
 Proof.
   intro.
   case n.
@@ -362,7 +362,7 @@ Proof.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
-Lemma Fp_plus_O_n : forall n:Fp, Fp_0+n = n.
+Lemma Fp_plus_O_n : forall n, Fp_0+n = n.
 Proof.
   intro.
   case n.
@@ -374,7 +374,7 @@ Proof.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
-Lemma Fp_plus_comm : forall (n m:Fp), n+m = m+n.
+Lemma Fp_plus_comm : forall n m, n+m = m+n.
 Proof.
   intros.
   case n, m.
@@ -385,7 +385,7 @@ Proof.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
-Lemma Fp_plus_assoc : forall (n m p:Fp), n+(m+p) = n+m+p.
+Lemma Fp_plus_assoc : forall n m p, n+(m+p) = n+m+p.
 Proof.
   intros.
   case n, m, p0.
@@ -398,7 +398,7 @@ Proof.
   exact (Fp_equality _ _ _ _ subg).
 Qed.
 
-Lemma Fp_plus_permute : forall (n m p:Fp), n + (m + p) = m + (n + p).
+Lemma Fp_plus_permute : forall n m p, n + (m + p) = m + (n + p).
 Proof.
   intros.
   case n, m, p0.
@@ -410,7 +410,7 @@ Proof.
   reflexivity.
 Qed.
 
-Lemma Fp_plus_assoc_reverse : forall (n m p:Fp), n + m + p = n + (m + p).
+Lemma Fp_plus_assoc_reverse : forall n m p, n + m + p = n + (m + p).
 Proof.
   intros.
   case n, m, p0.
@@ -420,6 +420,83 @@ Proof.
   rewrite (Nat.add_mod_idemp_l (x+x0) x1 p p_is_not_null).
   rewrite (plus_assoc x x0 x1).
   reflexivity.
+Qed.
+
+Lemma Fp_plus_reg_l : forall n m p, p + n = p + m -> n = m.
+Proof.
+  admit.
+Qed.
+
+Lemma Fp_n_Sn : forall n, n <> n + Fp_1.
+Proof.
+  intro.
+  destruct n.
+  unfold Fp_1, addFp.
+  intro wrong.
+  inversion wrong.
+  pose (tmp := mod_S x p (proj1 p_prime)).
+  rewrite (plus_n_O (S x)) in tmp.
+  rewrite (plus_Snm_nSm x O) in tmp.
+  destruct tmp.
+  rewrite H in H0.
+  rewrite (Nat.mod_small x p l) in H0.
+  case (n_Sn x H0).
+  pose (tmp := proj1 (Nat.mod_divides (x+1) p p_is_not_null) H).
+  destruct tmp.
+  case_eq x0.
+  intro wrong2.
+  rewrite wrong2 in H1.
+  rewrite (mult_0_r p) in H1.
+  discriminate (proj2 (plus_is_O x 1 H1)).
+  intros.
+  case_eq n.
+  admit.
+  intros.
+  rewrite H2 in H1.
+  rewrite (mult_succ_r p n) in H1.
+  rewrite H3 in H1.
+  rewrite (mult_succ_r p n0) in H1.
+  pose (l2 := l).
+  unfold lt in l2.
+  rewrite (plus_n_O (S x)) in l2.
+  rewrite (plus_Snm_nSm x O) in l2.
+  rewrite H1 in l2.
+  rewrite (plus_comm (p * n0 + p) p) in l2.
+  rewrite (plus_n_O p) in l2 at 4.
+  pose (l3 := le_trans (p*n0+p) O (p*n0) (plus_le_reg_l (p*n0+p) O p l2) (le_0_n (p*n0))).
+  rewrite (plus_n_O (p*n0)) in l3 at 2.
+  pose (l4 := le_n_0_eq p (plus_le_reg_l p O (p*n0) l3)).
+  case (p_is_not_null (eq_sym l4)).
+Qed.
+
+Lemma Fp_plus_le_reg_l : forall n m p, p + n <= p + m -> n <= m.
+Proof.
+  admit.
+Qed.
+
+Lemma Fp_plus_le_reg_l : forall n m p, p + n <= p + m -> n <= m.
+Proof.
+  admit.
+Qed.
+
+Lemma Fp_plus_le_reg_l : forall n m p, p + n <= p + m -> n <= m.
+Proof.
+  admit.
+Qed.
+
+Lemma Fp_plus_le_reg_l : forall n m p, p + n <= p + m -> n <= m.
+Proof.
+  admit.
+Qed.
+
+Lemma Fp_plus_le_reg_l : forall n m p, p + n <= p + m -> n <= m.
+Proof.
+  admit.
+Qed.
+
+Lemma Fp_plus_le_reg_l : forall n m p, p + n <= p + m -> n <= m.
+Proof.
+  admit.
 Qed.
 
 Close Scope Fp_scope.

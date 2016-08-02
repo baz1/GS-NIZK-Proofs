@@ -87,6 +87,13 @@ Definition pairing (a:G1) (b:G2) : GT :=
 
 (* Mathematical structure properties *)
 
+Theorem G1_O_well_formed : Is_zero G1 addG1 G1_O.
+Proof.
+  unfold Is_zero.
+  intro.
+  admit. (* TODO *)
+Qed.
+
 Theorem G1_well_formed : (Is_Fp_isomorphic G1 addG1 p).
 Proof.
   admit. (* TODO *)
