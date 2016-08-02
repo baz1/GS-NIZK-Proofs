@@ -412,7 +412,14 @@ Qed.
 
 Lemma Fp_plus_assoc_reverse : forall (n m p:Fp), n + m + p = n + (m + p).
 Proof.
-  admit.
+  intros.
+  case n, m, p0.
+  unfold addFp.
+  refine (Fp_equality _ _ _ _ _).
+  rewrite (Nat.add_mod_idemp_r x (x0+x1) p p_is_not_null).
+  rewrite (Nat.add_mod_idemp_l (x+x0) x1 p p_is_not_null).
+  rewrite (plus_assoc x x0 x1).
+  reflexivity.
 Qed.
 
 Close Scope Fp_scope.
