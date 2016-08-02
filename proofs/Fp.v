@@ -74,6 +74,14 @@ Proof. (* Thanks to Cyprien Mangin for this proof! *)
   apply le_unique.
 Qed.
 
+Remark Fp_equality2 : forall (n1 n2:nat), Fp_from_nat n1=Fp_from_nat n2 -> n1 mod p=n2 mod p.
+Proof.
+  intros.
+  unfold Fp_from_nat in H.
+  inversion H.
+  reflexivity.
+Qed.
+
 Theorem Fp_0_well_formed : Is_zero Fp addFp Fp_0.
 Proof.
   unfold Is_zero, Fp_0, addFp.
@@ -232,6 +240,7 @@ Fixpoint Fp_lst_increasing (n:nat) : list Fp :=
   end
 .
 
+
 Theorem Fp_card : Has_card Fp p.
 Proof.
   unfold Has_card.
@@ -250,28 +259,69 @@ Proof.
     unfold Fp_lst_increasing, length.
     exact subg.
     (* No duplicates *)
-    elim p.
+    assert (mainsubg : forall i:nat, i<=p -> NoDup (Fp_lst_increasing i)).
+    intro.
+    elim i.
+    intro useless.
     unfold Fp_lst_increasing.
     constructor.
-    intros.
-    assert (subg : NoDup (cons (Fp_from_nat n) (Fp_lst_increasing n))).
-    assert (subg2 : ~ In (Fp_from_nat n) (Fp_lst_increasing n)).
+    intros n recc.
+    assert (subg : S n <= p -> NoDup (cons (Fp_from_nat n) (Fp_lst_increasing n))).
+    assert (subg2 : S n <= p -> ~ In (Fp_from_nat n) (Fp_lst_increasing n)).
     elim n.
+    intro useless.
     unfold Fp_lst_increasing.
     simpl.
     intro.
-    case H0.
+    case H.
     intros.
     assert (subg : ~ In (Fp_from_nat (S n0)) (cons (Fp_from_nat n0) (Fp_lst_increasing n0))).
     intro.
     destruct H1.
-    admit. (* TODO from H1 *)
-    admit. (* TODO from H1 *)
+    unfold Fp_from_nat in H1.
+    inversion H1.
+    pose (H4 := mod_S n0 p (proj1 p_prime)).
+    destruct H4.
+    rewrite H2 in H3.
+    case (n_Sn (n0 mod p) H3).
+    rewrite H2 in H3.
+    pose (H4 := proj1 (Nat.mod_divides n0 p p_is_not_null) H3).
+    destruct H4.
+    rewrite H4 in H2.
+    rewrite <- (plus_O_n (S (p * x))) in H2.
+    rewrite <- (plus_Snm_nSm O (p*x)) in H2.
+    rewrite (mult_comm p x) in H2.
+    rewrite (Nat.mod_add 1 x p p_is_not_null) in H2.
+    rewrite (Nat.mod_small 1 p (proj1 p_prime)) in H2.
+    discriminate H2.
+    assert (myind : forall k:nat, k<=n0 -> ~In (Fp_from_nat (S n0)) (Fp_lst_increasing k)).
+    intro.
+    elim k.
+    intro useless.
+    unfold Fp_lst_increasing.
+    exact (in_nil (a:=Fp_from_nat (S n0))).
+    intros.
+    assert (subg3 : ~ ((Fp_from_nat n1=Fp_from_nat (S n0)) \/ (In (Fp_from_nat (S n0)) (Fp_lst_increasing n1)))).
+    intro wrong1.
+    destruct wrong1.
+    pose (H5 := Fp_equality2 n1 (S n0) H4).
+    rewrite (Nat.mod_small (S n0) p H0) in H5.
+    rewrite (Nat.mod_small n1 p (le_trans (S n1) n0 p H3
+      (le_Sn_le n0 p (le_Sn_le (S n0) p H0)):S n1<=p)) in H5.
+    rewrite H5 in H3.
+    case (le_Sn_n (S n0) (le_S (S (S n0)) n0 H3)).
+    case (H2 (le_Sn_le n1 n0 H3) H4).
+    unfold Fp_lst_increasing, In.
+    exact subg3.
+    case (myind n0 (le_n n0) H1).
     unfold Fp_lst_increasing.
     exact subg.
-    exact (NoDup_cons (A:=Fp) (Fp_from_nat n) (l:=Fp_lst_increasing n) subg2 H).
+    intro cond.
+    exact (NoDup_cons (A:=Fp) (Fp_from_nat n) (l:=Fp_lst_increasing n)
+      (subg2 cond) (recc (le_Sn_le n p cond))).
     unfold Fp_lst_increasing.
     exact subg.
+    exact (mainsubg p (le_n p)).
   (* Part 2: Cardinal at most p *)
   admit. (* TODO *)
 Qed.

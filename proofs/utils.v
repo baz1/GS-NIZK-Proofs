@@ -20,6 +20,10 @@ Fixpoint repeat_fn (n:nat) (A:Type) (f:A -> A) (s:A) : A :=
   end
 .
 
+Lemma mod_S : forall (n p:nat), 2<=p -> ((S n) mod p=S (n mod p)) \/ ((S n) mod p=O).
+Proof.
+  admit. (* TODO *)
+Qed.
 
 
 
@@ -53,7 +57,7 @@ Fixpoint mygcd (n m:nat) :=
 Lemma gcd_mult : forall (m n p:nat), m>0 -> n>0 -> p>0 ->
   gcd (m*n) p <= (gcd m p) * (gcd n p).
 Proof.
-  admit.
+  admit. (* TODO *)
 Qed.
 
 
