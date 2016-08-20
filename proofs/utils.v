@@ -27,6 +27,7 @@ Qed.
 
 
 
+
 (* Prime integer definition and properties *)
 Definition Is_prime (n:nat) : Prop :=
   (2 <= n)

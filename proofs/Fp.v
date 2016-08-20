@@ -324,9 +324,28 @@ Proof.
     exact subg.
     exact (mainsubg p (le_n p)).
   (* Part 2: Cardinal at most p *)
+  assert (subg : forall k:nat, k<=p -> ~(exists l:list Fp, length l > k /\ NoDup l /\
+    (forall e:nat, e<p -> e>=k -> ~ In (Fp_from_nat e) l))).
   intro.
-  destruct H.
+  elim k.
   admit. (* TODO *)
+  admit. (* TODO *)
+  pose (test := subg p (le_n p)).
+  intro.
+  assert (subg2 : exists l : list Fp,
+          length l > p /\
+          NoDup l /\
+          (forall e : nat, e < p -> e >= p -> ~ In (Fp_from_nat e) l)).
+  destruct H.
+  destruct H.
+  refine (ex_intro _ x _).
+  refine (conj _ (conj _ _)).
+  exact H.
+  exact H0.
+  intros.
+  unfold ge in H2.
+  case (le_not_lt p e H2 H1).
+  case (test subg2).
 Qed.
 
 Theorem Fp_well_formed : Is_Fp_isomorphic Fp addFp p.
