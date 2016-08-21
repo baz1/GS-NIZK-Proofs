@@ -240,6 +240,21 @@ Fixpoint Fp_lst_increasing (n:nat) : list Fp :=
   end
 .
 
+Lemma eq_dec_Fp : forall x y : Fp, {x = y} + {x <> y}.
+Proof.
+  intros.
+  destruct x.
+  destruct y.
+  case (eq_nat_dec x x0).
+  intro.
+  exact (left (Fp_equality x x0 l l0 e)).
+  intro xneq.
+  assert (subg : ConstrFp x l <> ConstrFp x0 l0).
+  intro Hwrong.
+  inversion Hwrong.
+  case (xneq H0).
+  exact (right subg).
+Qed.
 
 Theorem Fp_card : Has_card Fp p.
 Proof.
@@ -343,7 +358,66 @@ Proof.
   exact (Fp_equality x0 (x0 mod p) l (Nat.mod_upper_bound x0 p p_is_not_null)
     (eq_sym (Nat.mod_small x0 p l))).
   case (wrong (or_introl obv)).
-  admit. (* TODO *)
+  intros n Hrec Hs Hwrong.
+  pose (Hrecs := Hrec (le_Sn_le n p Hs)).
+  assert (subg3 : exists l : list Fp,
+           length l > n /\
+           NoDup l /\
+           (forall e : nat, e < p -> e >= n -> ~ In (Fp_from_nat e) l)).
+  destruct Hwrong.
+  refine (ex_intro _ (remove eq_dec_Fp (Fp_from_nat n) x) _).
+  decompose record H.
+  case (nodup_rm Fp x (Fp_from_nat n) eq_dec_Fp H2).
+  intro nnotinx.
+  rewrite (notin_rm Fp x (Fp_from_nat n) eq_dec_Fp nnotinx).
+  refine (conj (le_Sn_le (S n) (length x) H0) (conj H2 _)).
+  intro e.
+  case (eq_nat_dec e n).
+  intros.
+  rewrite e0.
+  exact nnotinx.
+  intros.
+  case (le_lt_or_eq n e H4).
+  exact (H3 e H1).
+  intro Hwrong.
+  case (n0 (eq_sym Hwrong)).
+  intro ninxconj.
+  decompose record ninxconj.
+  rewrite (nodup_rm2 Fp x (Fp_from_nat n) eq_dec_Fp H2 x0 x1 H5).
+  refine (conj _ (conj _ _)).
+  pose (lcmp := app_length x0 (Fp_from_nat n :: x1)).
+  rewrite <- H5 in lcmp.
+  unfold length in lcmp at 3.
+  fold (length x1) in lcmp.
+  rewrite <- (plus_n_Sm (length x0) (length x1)) in lcmp.
+  rewrite <- (app_length x0 x1) in lcmp.
+  rewrite lcmp in H0.
+  exact (gt_S_n _ _ H0).
+  rewrite H5 in H2.
+  exact (NoDup_remove_1 x0 x1 (Fp_from_nat n) H2).
+  intro e.
+  case (eq_nat_dec e n).
+  intros.
+  rewrite e0.
+  intro Hwrong.
+  case (in_app_or x0 x1 (Fp_from_nat n) Hwrong).
+  exact H4.
+  exact H7.
+  intros.
+  case (le_lt_or_eq n e H8).
+  intros H9 Hwrong1.
+  rewrite H5 in H3.
+  case (in_app_or x0 x1 (Fp_from_nat e) Hwrong1).
+  intro Hwrong2.
+  case (H3 e H6 H9 (in_or_app x0 (Fp_from_nat n :: x1) (Fp_from_nat e) (or_introl Hwrong2))).
+  intro Hwrong2.
+  assert (Hwrong3 : In (Fp_from_nat e) ((Fp_from_nat n)::x1)).
+  unfold In.
+  exact (or_intror Hwrong2).
+  case (H3 e H6 H9 (in_or_app x0 (Fp_from_nat n :: x1) (Fp_from_nat e) (or_intror Hwrong3))).
+  intro Hwrong.
+  case (n0 (eq_sym Hwrong)).
+  case (Hrecs subg3).
   pose (test := subg p (le_n p)).
   intro.
   assert (subg2 : exists l : list Fp,

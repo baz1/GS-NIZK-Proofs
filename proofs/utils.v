@@ -26,6 +26,59 @@ Proof.
 Qed.
 
 
+Lemma nodup_rm (A:Type) (l:list A) (x:A) : (forall x y:A, {x = y} + {x <> y}) ->
+  (NoDup l) -> ({~In x l} + {In x l /\ exists (l1 l2:list A), (l = l1++x::l2 /\ ~In x l1 /\ ~In x l2)}).
+Proof.
+  intros Adec lnodup.
+  case (in_dec Adec x l).
+  (* Case In x l *)
+    intro xinl.
+    refine (right (conj xinl _)).
+    destruct (in_split x l xinl).
+    destruct H.
+    refine (ex_intro _ x0 _).
+    refine (ex_intro _ x1 _).
+    rewrite H in lnodup.
+    pose (subg := (NoDup_remove_2 x0 x1 x lnodup)).
+    refine (conj H (conj _ _)).
+    intro abs1.
+    case (subg (in_or_app x0 x1 x (or_introl abs1))).
+    intro abs2.
+    case (subg (in_or_app x0 x1 x (or_intror abs2))).
+  (* Case ~In x l *)
+    intro xnotinl.
+    exact (left xnotinl).
+Qed.
+
+Lemma notin_rm (A:Type) (l:list A) (x:A) (p:forall x y:A, {x = y} + {x <> y}) :
+  (~In x l) -> (remove p x l=l).
+Proof.
+  elim l.
+  (* Case l=nil *)
+    intro useless.
+    unfold remove.
+    reflexivity.
+  (* Case l --> a::l *)
+    intros.
+    unfold remove.
+    case (p x a).
+    intro xisa.
+    admit.
+    intro xisnota.
+    case (in_dec p x l0).
+    intro xinl0.
+    case (H0 (in_cons a x l0 xinl0)).
+    intro xnotinl0.
+    rewrite <- (H xnotinl0) at 2.
+    reflexivity.
+Qed.
+
+Lemma nodup_rm2 (A:Type) (l:list A) (x:A) (p:forall x y:A, {x = y} + {x <> y}) :
+  NoDup l -> forall (l1 l2:list A), (l = l1++x::l2) -> (remove p x l=l1++l2).
+Proof.
+  admit.
+Qed.
+
 
 
 (* Prime integer definition and properties *)
