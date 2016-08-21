@@ -26,11 +26,39 @@ Proof.
 Qed.
 
 
-Lemma nodup_rm (A:Type) (l:list A) (x:A) : (forall x y:A, {x = y} + {x <> y}) ->
-  (NoDup l) -> ({~In x l} + {In x l /\ exists (l1 l2:list A), (l = l1++x::l2 /\ ~In x l1 /\ ~In x l2)}).
+Lemma rm_notin (A:Type) (l1 l2:list A) (x:A) (p:forall x y:A, {x = y} + {x <> y}) :
+  (~In x l1) -> ((remove p x (l1++l2)) = l1++(remove p x l2)).
 Proof.
-  intros Adec lnodup.
-  case (in_dec Adec x l).
+  elim l1.
+  (* Case l1=nil *)
+    intro useless.
+    rewrite (app_nil_l l2).
+    rewrite (app_nil_l (remove p x l2)).
+    reflexivity.
+  (* Case l1 --> a::l1 *)
+    intros a l Hrec xnotinal.
+    assert (subg : ~ In x l).
+    intro Hwrong.
+    case (xnotinal (in_cons a x l Hwrong)).
+    rewrite <- (app_comm_cons l l2 a).
+    rewrite <- (app_comm_cons l (remove p x l2) a).
+    rewrite <- (Hrec subg).
+    unfold remove at 1.
+    fold (remove p x (l++l2)).
+    case (p x a).
+    intro xisa.
+    rewrite xisa in xnotinal.
+    case (xnotinal (in_eq a l)).
+    intro xisnota.
+    reflexivity.
+Qed.
+
+Lemma nodup_rm (A:Type) (l:list A) (x:A) (p:forall x y:A, {x = y} + {x <> y}) :
+  (NoDup l) -> ({~In x l} + {In x l /\ exists (l1 l2:list A),
+    (l = l1++x::l2 /\ ~In x l1 /\ ~In x l2 /\ (remove p x l=l1++l2))}).
+Proof.
+  intros lnodup.
+  case (in_dec p x l).
   (* Case In x l *)
     intro xinl.
     refine (right (conj xinl _)).
@@ -40,11 +68,26 @@ Proof.
     refine (ex_intro _ x1 _).
     rewrite H in lnodup.
     pose (subg := (NoDup_remove_2 x0 x1 x lnodup)).
-    refine (conj H (conj _ _)).
+    assert (xnotinx0 : ~In x x0).
     intro abs1.
     case (subg (in_or_app x0 x1 x (or_introl abs1))).
+    assert (xnotinx1 : ~In x x1).
     intro abs2.
     case (subg (in_or_app x0 x1 x (or_intror abs2))).
+    refine (conj H (conj xnotinx0 (conj xnotinx1 _))).
+    rewrite H.
+    rewrite (rm_notin A x0 (x::x1) x p xnotinx0).
+    unfold remove.
+    case (p x x).
+    intro useless.
+    fold (remove p x x1).
+    rewrite <- (app_nil_r x1) at 1.
+    rewrite (rm_notin A x1 nil x p xnotinx1).
+    unfold remove.
+    rewrite (app_assoc _ _ _).
+    exact (app_nil_r _).
+    intro Hwrong.
+    case (Hwrong (eq_refl x)).
   (* Case ~In x l *)
     intro xnotinl.
     exact (left xnotinl).
@@ -71,12 +114,6 @@ Proof.
     intro xnotinl0.
     rewrite <- (H xnotinl0) at 2.
     reflexivity.
-Qed.
-
-Lemma nodup_rm2 (A:Type) (l:list A) (x:A) (p:forall x y:A, {x = y} + {x <> y}) :
-  NoDup l -> forall (l1 l2:list A), (l = l1++x::l2) -> (remove p x l=l1++l2).
-Proof.
-  admit.
 Qed.
 
 

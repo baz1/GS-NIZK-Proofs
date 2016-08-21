@@ -383,7 +383,8 @@ Proof.
   case (n0 (eq_sym Hwrong)).
   intro ninxconj.
   decompose record ninxconj.
-  rewrite (nodup_rm2 Fp x (Fp_from_nat n) eq_dec_Fp H2 x0 x1 H5).
+  rewrite H8.
+  clear H8.
   refine (conj _ (conj _ _)).
   pose (lcmp := app_length x0 (Fp_from_nat n :: x1)).
   rewrite <- H5 in lcmp.
@@ -402,19 +403,19 @@ Proof.
   intro Hwrong.
   case (in_app_or x0 x1 (Fp_from_nat n) Hwrong).
   exact H4.
-  exact H7.
+  exact H6.
   intros.
   case (le_lt_or_eq n e H8).
   intros H9 Hwrong1.
   rewrite H5 in H3.
   case (in_app_or x0 x1 (Fp_from_nat e) Hwrong1).
   intro Hwrong2.
-  case (H3 e H6 H9 (in_or_app x0 (Fp_from_nat n :: x1) (Fp_from_nat e) (or_introl Hwrong2))).
+  case (H3 e H7 H9 (in_or_app x0 (Fp_from_nat n :: x1) (Fp_from_nat e) (or_introl Hwrong2))).
   intro Hwrong2.
   assert (Hwrong3 : In (Fp_from_nat e) ((Fp_from_nat n)::x1)).
   unfold In.
   exact (or_intror Hwrong2).
-  case (H3 e H6 H9 (in_or_app x0 (Fp_from_nat n :: x1) (Fp_from_nat e) (or_intror Hwrong3))).
+  case (H3 e H7 H9 (in_or_app x0 (Fp_from_nat n :: x1) (Fp_from_nat e) (or_intror Hwrong3))).
   intro Hwrong.
   case (n0 (eq_sym Hwrong)).
   case (Hrecs subg3).
