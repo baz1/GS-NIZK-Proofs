@@ -328,7 +328,21 @@ Proof.
     (forall e:nat, e<p -> e>=k -> ~ In (Fp_from_nat e) l))).
   intro.
   elim k.
-  admit. (* TODO *)
+  intros useless abs1.
+  destruct abs1.
+  destruct H.
+  destruct H0.
+  destruct x.
+  unfold length in H.
+  case (lt_irrefl O H).
+  destruct f.
+  pose (wrong := H1 x0 l (le_0_n x0)).
+  unfold In in wrong.
+  assert (obv : ConstrFp x0 l = Fp_from_nat x0).
+  unfold Fp_from_nat.
+  exact (Fp_equality x0 (x0 mod p) l (Nat.mod_upper_bound x0 p p_is_not_null)
+    (eq_sym (Nat.mod_small x0 p l))).
+  case (wrong (or_introl obv)).
   admit. (* TODO *)
   pose (test := subg p (le_n p)).
   intro.
